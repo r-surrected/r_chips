@@ -1,0 +1,51 @@
+--@name Love Train
+--@author
+--@shared
+
+if CLIENT then
+    local base = hologram.create(owner():localToWorld(Vector(0, 0, 0)), Angle(0, 0, 0), "models/hunter/blocks/cube025x025x025.mdl", Vector(0, 0, 0))
+    local anchor = hologram.create(owner():localToWorld(Vector(0, 0, 0)), Angle(0, 0, 0), "models/hunter/blocks/cube025x025x025.mdl", Vector(0, 0, 0))
+    for v = 1, 30 do
+        anchor:setAngles(Angle(0, 12 * v, 0))
+        local holo = hologram.create(anchor:localToWorld(Vector(50, 0, 60)), anchor:getAngles(), "models/hunter/blocks/cube025x025x025.mdl", Vector(0.1, 0.9, 10))
+        holo:setParent(base)
+        holo:setMaterial("models/shiny")
+        holo:setColor(Color(255, 255, 0, 50))
+        holo:suppressEngineLighting(true) 
+    end
+    hook.add("RenderOffscreen", "shpin", function()
+        base:setAngles(Angle(0, base:getAngles()[2] + 0.5, 0))
+        base:setPos(owner():getPos())
+    end)
+    
+    --[[local SoundURL = "https://drive.google.com/uc?export=download&id=1vl1VTC3CQpvTtB55meIXTkuZXVrfsG7B"
+    bass.loadURL( SoundURL,"3d noblock noplay", function( snd )
+        snd:setPos( owner():getPos() )
+        snd:setVolume( 1 )
+        --snd:setLooping( true )
+        snd:setFade( 400, 500 )
+        snd:setLooping( true )
+        snd:play()
+    
+        hook.add( "Think", "x", function()
+            snd:setPos( owner():getPos() )
+        end)
+    end)]]
+
+end 
+if SERVER then
+    --EntityTakeDamage(Entity target, Entity attacker, Entity inflictor, number amount, number type, Vector position, Vector force)
+    hook.add("EntityTakeDamage", "love train", function(target, attacker, inflictor, amount, type, position, force)
+        if target == owner() then
+            if attacker == owner() then return true end
+            if attacker:isValid() then
+                pcall(function()
+                    --attacker:applyDamage(amount, attacker, inflictor, type, position)
+                    attacker:applyDamage(amount, owner(), inflictor, type, position)
+                    attacker:emitSound("npc/manhack/bat_away.wav", 75, 90 + (abs(math.random()) * 20) , 1, CHAN_AUTO)
+                end)
+            end
+            return true
+        end
+    end)
+end

@@ -1,0 +1,26 @@
+@name za hando
+@inputs 
+@outputs 
+@persist 
+@strict
+event keyPressed(Player:entity, Key:string, Down:number, KeyBind:string) {
+    if (Player == owner() & Key == "mouse_5"){  
+        findInBox(owner():toWorld(vec(10,30,0)), owner():toWorld(vec(100,-30,75)))
+        foreach(_:number, V:entity = findToArray()){ 
+            if(V & V != owner()){
+                if(V:isPlayer()){
+                    V:kill()
+                }
+                else{
+                    try{
+                    V:propDelete() 
+                    }
+                    catch(_:string){   
+                    }
+                }
+                owner():emitSound("ambient/energy/zap9.wav",10000, 100, 10000)
+            }  
+        }
+    } 
+
+}

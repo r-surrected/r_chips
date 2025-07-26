@@ -1,0 +1,57 @@
+@name E2 Holo Dial
+@inputs [Input]:number
+@outputs 
+@persist [Size Max Min NeedleAngle NormalizedInput]:number [NeedleColor]:vector 
+@trigger 
+@strict
+interval(10)
+if(first()){
+#!!!!!!REQUIRES SPROPS!!!!!!!
+# made by the coolest (r_surrected)
+    NormalizedInput = 0
+#--Dial Config--
+    #Size of dial, default = 1    
+    Size = 1
+    #Max / Min are the max and min values the dial displays
+    Max = 100
+    Min = 0
+    #Dial needle color !!DOESNT WORK WHEN DYNAMIC IS ENABLED!!, default = vec(255,0,0)
+    NeedleColor = vec(255,0,0)
+    #Dial needle offset angle (0 = facing left), default = -40
+    NeedleAngle = -45
+    
+#---------------
+entity():setAlpha(0.1)
+
+#Holo Creations
+# 1 - Black Background
+holoCreate(1,entity():toWorld(vec(0)),vec(0),entity():toWorld(ang(0,0,90)),vec(0,0,0),"models/sprops/geometry/fdisc_12.mdl")
+holoScaleUnits(1,vec(10*Size,Size/5+0.1,10*Size))
+holoMaterial(1,"models/debug/debugwhite")
+holoParent(1,entity())
+# 2 - White Background
+holoCreate(2,entity():toWorld(vec(0,0,Size/15+0.1)),vec(0),entity():toWorld(ang(0,0,90)),vec(240),"models/sprops/geometry/fdisc_12.mdl")
+holoScaleUnits(2,vec(9*Size,Size/5+0.1,9*Size))
+holoMaterial(2,"models/debug/debugwhite")
+holoParent(2,entity())
+# 3 - Needle
+holoCreate(3,entity():toWorld(vec(0,-Size*2,Size/10+0.15)),vec(0),holoEntity(2):toWorld(ang(0,0,0)),NeedleColor,"models/sprops/geometry/hhex_12.mdl")
+holoScaleUnits(3,vec(Size/2,Size/5+0.1,4*Size))
+holoMaterial(3,"models/debug/debugwhite")
+# 4 - Needle Center
+holoCreate(4,entity():toWorld(vec(0,0,Size/10+0.15)),vec(0),entity():toWorld(ang(0,0,90)),NeedleColor,"models/sprops/geometry/fdisc_12.mdl")
+holoScaleUnits(4,vec(Size,Size/5+0.1,Size))
+holoMaterial(4,"models/debug/debugwhite")
+holoParent(4,entity())
+holoParent(3,4)
+}
+# Processing
+Input = clamp(Input,Min,Max)
+NormalizedInput = (Input-Min)/(Max-Min)
+# Needle Changes
+# Dynamic Color !!OVERRIDES NORMAL COLORS!!
+NeedleColor = hsv2rgb((1-NormalizedInput)*120,1,1)
+
+holoAng(4,holoEntity(2):toWorld(ang(-((NormalizedInput*(180-2*NeedleAngle))+NeedleAngle),0,0)))
+holoColor(4,NeedleColor)
+holoColor(3,NeedleColor)

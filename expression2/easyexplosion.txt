@@ -1,0 +1,9 @@
+@name easyExplosion
+@inputs V:vector
+@outputs 
+@persist 
+@strict
+if(first()){timer("1",1)}
+if(clk("1")){
+    explosion(V, 5, owner())
+}

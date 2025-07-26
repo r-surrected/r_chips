@@ -1,0 +1,43 @@
+@name Fake JI Turret
+@inputs 
+@outputs Pos:vector LocalPos:vector
+@persist
+@trigger 
+@strict
+@model models/props_c17/tools_wrench01a.mdl
+# made by r_surrected for cfc b/k
+setMass(50000)
+if (!clk("Detect")) {
+  Pos = entity():pos()
+  LocalPos = Pos + vec(0,70,0)
+  # Holo Index 1 - Turret
+  holoCreate(1,LocalPos)
+  holoParent(1,entity())
+  holoAng(1,ang(vec(0,90,0)))
+  holoModel(1,"models/Combine_turrets/Floor_turret.mdl")
+  holoMaterial(1,"models/mat_jack_turret")
+  # Holo Index 2 - Battery
+  holoCreate(2,LocalPos + vec(4,-1,22))
+  holoParent(2,1)
+  holoAng(2,ang(vec(0,-90,90)))
+  holoModel(2,"models/Items/car_battery01.mdl")
+  # holoColor(2,vec(100))
+  holoMaterial(2,"models/mat_jack_turretbattery")
+  # Holo Index 3 - Ammo Pack
+  holoCreate(3,LocalPos + vec(-10,0,24))
+  holoParent(3,1)
+  holoAng(3,ang(vec(0,90,10)))
+  holoModel(3,"models/Items/BoxSRounds.mdl")
+  # holoColor(3,vec(100))
+  holoMaterial(3,"models/mat_jack_ammobox_shot")
+  #play noise every few seconds, breaks the orientation
+}
+PlayNoise = 1
+if (PlayNoise == 1) {
+  timer("Detect",2000)
+  if (clk("Detect")) {
+    soundPlay(1,1,"snd_jack_turretdetect.mp3")
+    soundVolume(1,100)
+    
+  }
+}
